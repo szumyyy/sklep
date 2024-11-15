@@ -2,20 +2,26 @@
 
 declare(strict_types=1);
 
-//include("C:\projects\Git\src\Utils\debug.php");
-//include_once("C:\projects\Git\src\Utils\debug.php");
-//require("C:\projects\Git\src\Utils\debug.php");abvcq
-
 namespace App;
 
-require_once("C:\projects\Git\src\Utils\debug.php");
+require_once("src/Utils/debug.php");
+require_once("src/View.php");
 
-$action =$_GET['action'] ?? null;
+const DEFAULT_ACTION = 'list';
 
-include_once("templates/pages/list.php");
-/*if (!empty($_GET['action'])){
-    $action =$_GET['action'];
+$action =$_GET['action'] ?? DEFAULT_ACTION;
+
+$view = new View();
+
+$viewParams=[];
+if ($action ==='create') {
+    $page = 'create';
+    $viewParams['resultCreate'] = "udało się";
 } else {
-    $action = null;
-}*/
+    $page = 'list';
+    $viewParams['resultList'] = "wyświetlamy produkty";
+}
+
+
+$view->render($action, $viewParams);
 
