@@ -1,4 +1,4 @@
-    <div>
-        <h3>lista produktow</h3>
-        <b><?php echo $params['resultList']; ?></b>
-    </div>
+<div>
+  <h4>lista produktów</h4>
+  <b><?php echo $params['resultList'] ?? "" ?></b>
+</div>
