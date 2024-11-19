@@ -15,7 +15,10 @@
           </li>
           <li>
             <label>Opis</label>
-            <textarea name="description" id="field5" class="field-long field-textarea"></textarea>
+            <textarea name="description" id="www" class="abc"></textarea>
+          </li>
+          <li>
+            <label>Cena </label>
           </li>
           <li>
             <input type="submit" value="Submit" />
