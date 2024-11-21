@@ -59,10 +59,20 @@ class Database
   public function createProduct(array $data): void
   {
     try {
+      $name = $data['name'];
+      if(strlen($name) > 255 and strlen($name) < 5) {
+        throw new StorageException('Nazwa produktu jest zbyt długa', 400);
+      }
       $name = $this->conn->quote($data['name']);
       $description = $this->conn->quote($data['description']);
-      $price = $this->conn->quote($data['price']);
-      $stock = $this->conn->quote($data['stock']);
+      $price = (float)$data['price'];
+      if($price < 0.0) {
+        throw new StorageException('Cena produktu jest mniejsza od zera', 400);
+      }
+      $stock = (int)$data['stock'];
+      if($stock < 0) {
+        throw new StorageException('Ilość produktu jest mniejsza od zera', 400);
+      }
       $image = $this->conn->quote($data['image']);
       $created_at = $this->conn->quote(date('Y-m-d H:i:s'));
       $updated_at = $this->conn->quote(date('Y-m-d H:i:s'));
@@ -74,7 +84,7 @@ class Database
 
       $this->conn->exec($query);
     } catch (Throwable $e) {
-      throw new StorageException('Nie udało się utworzyć nowego produktu', 400, $e);
+      throw new StorageException($e->getMessage(), 400, $e);
     }
   }
 

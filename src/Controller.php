@@ -46,12 +46,14 @@ class Controller
 
         $data = $this->getRequestPost();
         if (!empty($data)) {
-          $productData = [
+          /*$productData = [
             'name' => $data['name'],
             'description' => $data['description']
+            'price' => $data['price'],
+            'stock' => $data['stock']
           ];
-          dump($productData);
-          $this->database->createProduct($productData);
+          dump($productData);*/
+          $this->database->createProduct($data);
           header('Location: /sklep/?before=created');
           exit;
         }

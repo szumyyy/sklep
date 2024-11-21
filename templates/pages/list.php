@@ -45,7 +45,7 @@
             <tr>
               <td><?php echo (int) $product['id'] ?></td>
               <td><?php echo htmlentities($product['name']) ?></td>
-              <td><?php echo htmlentities($product['created']) ?></td>
+              <td><?php echo htmlentities($product['created_at']) ?></td>
               <td>
                 <a href="/?action=show&id=<?php echo (int) $product['id'] ?>">
                   <button>Szczegóły</button>
