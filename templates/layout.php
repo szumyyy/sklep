@@ -1,7 +1,6 @@
 <html lang="pl">
 
 <head>
-
 </head>
 
 <body class="body">
@@ -13,8 +12,8 @@
     <div class="container">
       <div class="menu">
         <ul>
-          <li><a href="/sklep/">Strona główna</a></li>
-          <li><a href="/sklep/?action=create">Nowy produkt</a></li>
+          <li><a href="/">Strona główna</a></li>
+          <li><a href="/?action=create">Nowy produkt</a></li>
         </ul>
       </div>
 
@@ -24,7 +23,7 @@
     </div>
 
     <div class="footer">
-      <p>abcdxyz</p>
+      <p>Stopka</p>
     </div>
   </div>
 </body>

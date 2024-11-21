@@ -7,15 +7,18 @@ namespace App;
 require_once("src/Exception/ConfigurationException.php");
 
 use App\Exception\ConfigurationException;
+use App\Exception\NotFoundException;
 
-require_once("src/Database.php");
-require_once("src/View.php");
+require_once("Database.php");
+require_once("View.php");
 
 class Controller
 {
   private const DEFAULT_ACTION = 'list';
 
   private static array $configuration = [];
+
+  private Database $database;
   private array $request;
   private View $view;
 
@@ -26,10 +29,10 @@ class Controller
 
   public function __construct(array $request)
   {
-    if (empty(self::$configuration['db'])){
+    if (empty(self::$configuration['db'])) {
       throw new ConfigurationException('Configuration error');
     }
-    $db = new Database(self::$configuration['db']);
+    $this->database = new Database(self::$configuration['db']);
 
     $this->request = $request;
     $this->view = new View();
@@ -37,37 +40,58 @@ class Controller
 
   public function run(): void
   {
-    $viewParams = [];
-
     switch ($this->action()) {
       case 'create':
         $page = 'create';
-        $created = false;
 
         $data = $this->getRequestPost();
         if (!empty($data)) {
-          $created = true;
-          $viewParams = [
-            'title' => $data['title'],
+          $productData = [
+            'name' => $data['name'],
             'description' => $data['description']
           ];
+          dump($productData);
+          $this->database->createProduct($productData);
+          header('Location: /sklep/?before=created');
+          exit;
         }
 
-        $viewParams['created'] = $created;
         break;
       case 'show':
+        $page = 'show';
+
+        $data = $this->getRequestGet();
+        $productId = (int) ($data['id'] ?? null);
+
+        if (!$productId) {
+          header('Location: /?error=missingProductId');
+          exit;
+        }
+
+        try {
+          $product = $this->database->getProduct($productId);
+        } catch (NotFoundException $e) {
+          header('Location: /?error=productNotFound');
+          exit;
+        }
+
         $viewParams = [
-          'title' => 'Mój produkt',
-          'description' => 'Opis'
+          'product' => $product
         ];
         break;
       default:
         $page = 'list';
-        $viewParams['resultList'] = "wyświetlamy produkty";
+        $data = $this->getRequestGet();
+
+        $viewParams = [
+          'products' => $this->database->getProducts(),
+          'before' => $data['before'] ?? null,
+          'error' => $data['error'] ?? null
+        ];
         break;
     }
 
-    $this->view->render($page, $viewParams);
+    $this->view->render($page, $viewParams ?? []);
   }
 
   private function action(): string
