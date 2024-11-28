@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App;
 
-require_once("Exception/StorageException.php");
-require_once("Exception/NotFoundException.php");
-
 use App\Exception\ConfigurationException;
 use App\Exception\StorageException;
 use App\Exception\NotFoundException;
@@ -48,43 +45,49 @@ class Database
   public function getProducts(): array
   {
     try {
-      $query = "SELECT * FROM products";
+      $query = "SELECT id, name, created_at, image FROM products";
       $result = $this->conn->query($query);
       return $result->fetchAll(PDO::FETCH_ASSOC);
     } catch (Throwable $e) {
-      throw new StorageException('Nie udało się pobrać danych o produktach', 400, $e);
+      throw new StorageException('Nie udało się pobrać danych o notatkach', 400, $e);
     }
   }
 
   public function createProduct(array $data): void
   {
     try {
-      $name = $data['name'];
-      if(strlen($name) > 255 and strlen($name) < 5) {
-        throw new StorageException('Nazwa produktu jest zbyt długa', 400);
-      }
       $name = $this->conn->quote($data['name']);
       $description = $this->conn->quote($data['description']);
-      $price = (float)$data['price'];
-      if($price < 0.0) {
-        throw new StorageException('Cena produktu jest mniejsza od zera', 400);
-      }
-      $stock = (int)$data['stock'];
-      if($stock < 0) {
-        throw new StorageException('Ilość produktu jest mniejsza od zera', 400);
-      }
-      $image = $this->conn->quote($data['image']);
       $created_at = $this->conn->quote(date('Y-m-d H:i:s'));
-      $updated_at = $this->conn->quote(date('Y-m-d H:i:s'));
+      $image = $this->conn->quote($data['image']);
 
       $query = "
-        INSERT INTO products(name, description, price, stock, image, created_at, updated_at)
-        VALUES($name, $description, $price, $stock, $image, $created_at, $updated_at)
+        INSERT INTO products(name, description, created_at, image)
+        VALUES($name, $description, $created_at, $image)
       ";
 
       $this->conn->exec($query);
     } catch (Throwable $e) {
-      throw new StorageException($e->getMessage(), 400, $e);
+      throw new StorageException('Nie udało się utworzyć nowej produktu', 400, $e);
+    }
+  }
+
+  public function editProduct(int $id, array $data): void
+  {
+    try {
+      $name = $this->conn->quote($data['name']);
+      $description = $this->conn->quote($data['description']);
+      $image = $this->conn->quote($data['image']);
+
+      $query = "
+        UPDATE products
+        SET name = $name, description = $description, image = $image
+        WHERE id = $id
+      ";
+
+      $this->conn->exec($query);
+    } catch (Throwable $e) {
+      throw new StorageException('Nie udało się zaktualizować produktu', 400, $e);
     }
   }
 

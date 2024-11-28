@@ -4,11 +4,11 @@
       <?php
       if (!empty($params['error'])) {
         switch ($params['error']) {
-          case 'missingNoteId':
-            echo 'Niepoprawny identyfikator notatki';
+          case 'missingProductId':
+            echo 'Niepoprawny identyfikator produktu';
             break;
           case 'productNotFound':
-            echo 'Produkt nie został znaleziony';
+            echo 'Produkt nie została znaleziona';
             break;
         }
       }
@@ -21,6 +21,9 @@
           case 'created':
             echo 'Produkt został utworzony';
             break;
+          case 'edited':
+            echo 'Produkt został zaktualizowany';
+            break;
         }
       }
       ?>
@@ -31,9 +34,9 @@
         <thead>
           <tr>
             <th>Id</th>
-            <th>Nazwa</th>
-            <th>Data utworzenia</th>
-            <th>Cena</th>
+            <th>Tytuł</th>
+            <th>Data</th>
+            <th>Opcje</th>
           </tr>
         </thead>
       </table>
@@ -43,11 +46,11 @@
         <tbody>
           <?php foreach ($params['products'] ?? [] as $product) : ?>
             <tr>
-              <td><?php echo (int) $product['id'] ?></td>
-              <td><?php echo htmlentities($product['name']) ?></td>
-              <td><?php echo htmlentities($product['created_at']) ?></td>
+              <td><?php echo $product['id'] ?></td>
+              <td><?php echo $product['name'] ?></td>
+              <td><?php echo $product['created_at'] ?></td>
               <td>
-                <a href="/?action=show&id=<?php echo (int) $product['id'] ?>">
+                <a href="/sklep/?action=show&id=<?php echo $product['id'] ?>">
                   <button>Szczegóły</button>
                 </a>
               </td>

@@ -1,18 +1,21 @@
 <div class="show">
-  <?php $product = $params['products'] ?? null; ?>
+  <?php $product = $params['product'] ?? null; ?>
   <?php if ($product) : ?>
     <ul>
-      <li>Id: <?php echo (int) $product['id'] ?></li>
-      <li>Tytuł: <?php echo htmlentities($product['name']) ?></li>
+      <li>Id: <?php echo $product['id'] ?></li>
+      <li>Tytuł: <?php echo $product['name'] ?></li>
       <li>
-        <pre><?php echo htmlentities($product['description']) ?></pre>
+        <pre><?php echo $product['description'] ?></pre>
       </li>
-      <li>Zapisano: <?php echo htmlentities($product['created']) ?></li>
+      <li>Zapisano: <?php echo $product['created_at'] ?></li>
     </ul>
+    <a href="/sklep/?action=edit&id=<?php echo $product['id'] ?>">
+      <button>Edytuj</button>
+    </a>
   <?php else : ?>
-    <div>Brak produktów do wyświetlenia</div>
+    <div>Brak produktu do wyświetlenia</div>
   <?php endif; ?>
   <a href="/sklep/">
-    <button>Powrót do listy produktów</button>
+    <button>Powrót do listy notatek</button>
   </a>
 </div>
