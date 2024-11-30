@@ -2,20 +2,37 @@
 
 declare(strict_types=1);
 
-//include("C:\projects\Git\src\Utils\debug.php");
-//include_once("C:\projects\Git\src\Utils\debug.php");
-//require("C:\projects\Git\src\Utils\debug.php");
+spl_autoload_register(function (string $classNamespace) {
+  $path = str_replace(['\\', 'App/'], ['/', ''], $classNamespace);
+  $path = "src/$path.php";
+  require_once($path);
+});
 
-namespace App;
+require_once("src/Utils/debug.php");
+$configuration = require_once("config/config.php");
 
-require_once("C:\projects\Git\src\Utils\debug.php");
+use App\Controller\AbstractController;
+use App\Controller\ProductController;
+use App\Request;
+use App\Exception\AppException;
+use App\Exception\ConfigurationException;
 
-$action =$_GET['action'] ?? null;
+$request = new Request($_GET, $_POST, $_SERVER, $_FILES);
 
-include_once("templates/pages/list.php");
-/*if (!empty($_GET['action'])){
-    $action =$_GET['action'];
-} else {
-    $action = null;
-}*/
+try {
+  //$controller = new Controller($request);
+  //$controller->run();
 
+  AbstractController::initConfiguration($configuration);
+  (new ProductController($request))->run();
+} catch (ConfigurationException $e) {
+  //mail('xxx@xxx.com', 'Error', $e->getMessage());
+  echo '<h1>Wystąpił błąd w aplikacji</h1>';
+  echo 'Problem z applikacją, proszę spróbować za chwilę.';
+} catch (AppException $e) {
+  echo '<h1>Wystąpił błąd w aplikacji</h1>';
+  echo '<h3>' . $e->getMessage() . '</h3>';
+} catch (\Throwable $e) {
+  echo '<h1>Wystąpił błąd w aplikacji</h1>';
+  dump($e);
+}
